@@ -1,0 +1,14 @@
+extends layout 
+
+block content 
+
+    h1=  title
+
+        hr 
+
+    ul 
+        each brand in brands
+
+            li  
+                p
+                    a(href=brand.url)= brand.name

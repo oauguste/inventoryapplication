@@ -1,0 +1,35 @@
+extends layout
+
+block content
+    .container
+        h1= title
+        if errors && errors.length
+            .alert.alert-danger
+                for error in errors
+                    p= error.msg
+        form(method="post" action="/bike/create")
+            div.form-group
+                label(for="name") Name:
+                input#name.form-control(type="text" name="name" required value=bike ? bike.name : '')
+
+            div.form-group
+                label(for="brand") Brand:
+                select#brand.form-control(name="brand")
+                    each brand in brands
+                        option(value=brand._id selected=(bike && bike.brand == brand._id))= brand.name
+
+            div.form-group
+                label(for="category") Category:
+                select#category.form-control(name="category")
+                    each category in categories
+                        option(value=category._id selected=(bike && bike.category == category._id))= category.name
+
+            div.form-group
+                label(for="imageUrl") Image URL:
+                input#imageUrl.form-control(type="text" name="imageUrl" value=bike ? bike.imageUrl : '')
+
+            div.form-group
+                label(for="price") Price:
+                input#price.form-control(type="number" name="price" step="1.0" value=bike ? bike.price : '')
+
+            input.btn.btn-primary(type="submit" value="Create Bike")

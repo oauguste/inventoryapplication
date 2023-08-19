@@ -1,8 +1,22 @@
+* {
+  list-style: none;
+}
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B7FF;
+  color: #00b7ff;
+}
+.bike-image {
+  width: 300px;
+  height: auto;
+
+  display: block; /* To ensure it's not hidden */
+}
+.sidebar-nav {
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
 }

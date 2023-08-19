@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/stylesheets/style.css") 
+    body
+        h1= title
+
+        // Check if there are any bikes
+        if bike_list
+            ul#bike-list
+                each bike in bike_list
+                    li
+                        h2
+                            a(href=`/catalog/bike/${bike._id}`)= bike.name
+
+                        img.bike-image(src=bike.imageUrl, alt=bike.name)
+                        p="Listing Price: $"+ bike.price
+                        p= "Inventory: " +bike.stock + " left in stock"
+
+        else
+            p No bikes available at the moment.

@@ -2,4 +2,15 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Welcome to #[em Bike Inventory]
+
+  h1 Dynamic content
+
+  p The library has the following record counts:
+
+  ul
+    li #[strong Bikes:] !{bike_count}
+    li #[strong Number of Bikes:] !{bike_instance_count}
+    li #[strong Number of available Bikes:] !{bike_instance_available_count}
+    li #[strong Brands:] !{brand_count}
+    li #[strong Categories:] !{category_count}

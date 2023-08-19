@@ -1,0 +1,14 @@
+extends layout 
+
+block content 
+
+    h1=  title
+
+        hr 
+
+    ul 
+        each category in categories
+
+            li  
+                p
+                    a(href=category.url)= category.name

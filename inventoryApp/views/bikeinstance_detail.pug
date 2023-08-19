@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+    p Bike Serial Number# #{bikeinstance._id}
+
+    p #[strong Name:] 
+        a(href=bikeinstance.bike.url) #{bikeinstance.bike.name}
+    img.bike-image(src=bikeinstance.bike.imageUrl, alt=bikeinstance.bike.name) 
+
+
+    p #[strong Status: ]
+        if bikeinstance.status=='In Stock'
+            span.text-success #{bikeinstance.status}
+        else if bikeinstance.status=='Sold'
+            span.text-danger #{bikeinstance.status}
+        else if bikeinstance.status=='Reserved'
+            span.text-danger #{bikeinstance.status}
+
+        else
+            span.text-warning #{bikeinstance.status}
+
+    if bikeinstance.status!='In Stock'
+        p #[strong Not in Stock] 

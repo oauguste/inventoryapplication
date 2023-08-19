@@ -1,0 +1,33 @@
+extends layout
+block content
+
+    h1= title 
+
+    if bikeinstance_list && bikeinstance_list.length
+        table.table
+            thead
+                tr
+                    th Bike Name
+                    th Category
+                    th Status
+                    th Price
+            tbody
+                each val in bikeinstance_list
+                    tr
+                        td 
+                            a(href=val.url) #{val.bike.name}
+                        td #{val.bike.category[0].name}
+                        td 
+                            if val.status=='In Stock'
+                                span.text-success #{val.status}
+                            else if val.status=='Reserved'
+                                span.text-danger #{val.status}
+                            else if val.status =="Out for repair"
+                                span.text-warning #{val.status}
+                            else if val.status!='In Stock'
+                                | Sold Out
+                        td  
+                            p $#{val.bike.price}
+
+    else
+        p There are no bikes in this library.

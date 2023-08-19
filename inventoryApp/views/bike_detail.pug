@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h1= title 
+
+    .row
+        .col-md-6
+            if bike.imageUrl
+                img.img-fluid(src=bike.imageUrl alt=bike.name)
+
+        .col-md-6
+            h2  
+                a(href=`/catalog/bikeinstances`) #{bike.name}
+
+            h4 Brand: 
+            p #{bike.brand.name} 
+            h4 Categories: 
+            each category in bike.category
+                p #{category.name}
+            hr
+            p Price: #{bike.price}
+            p Stock: #{bike.stock}

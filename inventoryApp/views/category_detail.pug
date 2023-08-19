@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    .container
+        h1 Category: #{title.name}
+
+        if bikes.length
+            h2 Bikes under this category
+            ul.list-group
+                each bike in bikes
+                    li.list-group-item
+                        a(href=`/catalog/bike/${bike._id}`) #{bike.name}
+
+                        p Price $#{bike.price}
+                        p Left in stock: #{bike.stock} bikes
+        else
+            p No bikes found for this category.
