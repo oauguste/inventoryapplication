@@ -8,15 +8,15 @@ block content
             thead
                 tr
                     th Bike Name
-                    th Category
+
                     th Status
                     th Price
             tbody
                 each val in bikeinstance_list
                     tr
                         td 
-                            a(href=val.url) #{val.name}
-                        td #{val.bike.category.name}
+                            a(href=val.url) #{val.bike.name}
+
                         td 
                             if val.status=='In Stock'
                                 span.text-success #{val.status}
