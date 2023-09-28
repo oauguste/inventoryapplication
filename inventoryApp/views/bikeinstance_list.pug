@@ -15,8 +15,8 @@ block content
                 each val in bikeinstance_list
                     tr
                         td 
-                            a(href=val.url) #{val.bike.name}
-                        td #{val.bike.category[0].name}
+                            a(href=val.url) #{val.name}
+                        td #{val.bike.category.name}
                         td 
                             if val.status=='In Stock'
                                 span.text-success #{val.status}

@@ -1,7 +1,7 @@
 const Category = require("../models/category");
 const asyncHandler = require("express-async-handler");
-const Book = require("../models/category");
-const bike = require("../models/bike");
+
+const Bike = require("../models/bike");
 const {
   body,
   validationResult,
@@ -32,15 +32,14 @@ exports.category_detail = asyncHandler(
       .sort({ name: 1 })
       .exec();
 
-    const bikes = await bike
-      .find({
-        category: category._id,
-      })
-      .exec();
+    const bikes = await Bike.find({
+      category: category._id,
+    }).exec();
 
     res.render("category_detail", {
       title: category,
       bikes: bikes,
+      category: category,
     });
   }
 );
@@ -79,11 +78,9 @@ exports.category_create_post = [
       });
       return;
     } else {
-      const categoryExists = await category
-        .findOne({
-          name: req.body.name,
-        })
-        .exec();
+      const categoryExists = await Category.findOne({
+        name: req.body.name,
+      }).exec();
       if (categoryExists) {
         res.redirect(categoryExists.url);
       } else {
@@ -118,7 +115,22 @@ exports.category_update_get = asyncHandler(
 // @access Private
 exports.category_delete_post = asyncHandler(
   async (req, res, next) => {
-    res.send("Not Implemented: category post delete");
+    const [category, allBikesInCategory] =
+      await Promise.all([
+        Category.findById(req.params.id).exec(),
+        Bike.find({ category: req.params.id }).exec(),
+      ]);
+    if (allBikesInCategory.length > 0) {
+      res.render("category_delete", {
+        title: "Bike Category",
+        category: category,
+        category_bikes: allBikesInCategory,
+      });
+      return;
+    } else {
+      await Category.findByIdAndRemove(req.body.categoryid);
+      res.redirect("/catalog/categories");
+    }
   }
 );
 
@@ -127,6 +139,18 @@ exports.category_delete_post = asyncHandler(
 // @access Private
 exports.category_delete_get = asyncHandler(
   async (req, res, next) => {
-    res.send("Not Implemented: category get delete");
+    const [category, allBikesInCategory] =
+      await Promise.all([
+        Category.findById(req.params.id).exec(),
+        Bike.find({ category: req.params.id }).exec(),
+      ]);
+    if (category === null) {
+      res.redirect("/catalog/categories");
+    }
+    res.render("category_delete", {
+      title: "Bike Category",
+      category: category,
+      category_bikes: allBikesInCategory,
+    });
   }
 );

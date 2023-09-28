@@ -18,6 +18,7 @@ exports.bikeInstance_list = asyncHandler(
         populate: { path: "category" },
       })
       .exec();
+    console.log(JSON.stringify(allBikeInstances, null, 2));
     res.render("bikeinstance_list", {
       title: "Bike Instance List",
       bikeinstance_list: allBikeInstances,
@@ -26,11 +27,10 @@ exports.bikeInstance_list = asyncHandler(
 );
 
 // @desc Get all bikeInstance detail
-// @route /bikeInstance/:itemId
 // @access Public
 exports.bikeInstance_detail = asyncHandler(
   async (req, res, next) => {
-    const bikeInstance = await BikeInstance.findById(
+    const allBikeInstances = await BikeInstance.findById(
       req.params.id
     )
       .populate({
@@ -39,14 +39,14 @@ exports.bikeInstance_detail = asyncHandler(
       })
       .exec();
 
-    if (bikeInstance === null) {
+    if (allBikeInstances === null) {
       const err = new Error("Bike copy not found");
       err.status = 404;
       return next(err);
     }
     res.render("bikeinstance_detail", {
       title: "Bike",
-      bikeinstance: bikeInstance,
+      bikeinstance: allBikeInstances,
     });
   }
 );
@@ -56,9 +56,9 @@ exports.bikeInstance_detail = asyncHandler(
 // @access Private
 exports.bikeInstance_create_get = asyncHandler(
   async (req, res, next) => {
-    const allBikes = await Bike.find({}, "title").exec();
-    res.red = nd("bikeinstance_form", {
-      title: "Create Bikeinstance",
+    const allBikes = await Bike.find().exec();
+    res.render("bikeinstance_form", {
+      title: "Create Bike instance",
       bike_list: allBikes,
     });
   }
@@ -67,19 +67,49 @@ exports.bikeInstance_create_get = asyncHandler(
 // @desc Create new bikeInstance on Post
 // @route /bikeInstance/create
 // @access Private
-exports.bikeInstance_create_post = asyncHandler(
-  async (req, res, next) => {
-    res.send("Not Implemented: bikeInstance get create");
-  }
-);
+exports.bikeInstance_create_post = [
+  body("bike", "bike must be specified")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("status", "Status must be specified")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const bikeInstance = new BikeInstance({
+      bike: req.body.bike,
+      status: req.body.status,
+    });
+    if (!errors.isEmpty()) {
+      const allBikes = await Bike.find().exec();
+
+      res.render("bikeinstance_form", {
+        title: "Create Bike instance",
+        bike_list: allBikes,
+        selected_bike: bikeInstance.bike._id,
+        errors: errors.array(),
+        bikeinstance: bikeInstance,
+      });
+      return;
+    } else {
+      await bikeInstance.save();
+
+      res.redirect(bikeInstance.url);
+    }
+  }),
+];
 
 // @desc Update bikeInstance on post
 // @route /bikeInstance/itemId/update
 // @access Private
 exports.bikeInstance_update_post = asyncHandler(
-  async (req, res, next) => {
-    res.send("Not Implemented: bikeInstance post Update");
-  }
+  asyncHandler(async (req, res, next) => {
+    res.send("Not Implemented: bikeInstance get create");
+  })
 );
 
 // @desc Update bikeInstance on get

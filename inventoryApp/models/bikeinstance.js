@@ -20,6 +20,7 @@ const BikeInstanceSchema = new Schema({
   },
   purchaseDate: { type: Date },
 });
+
 BikeInstanceSchema.virtual("url").get(function () {
   return `/catalog/bikeinstance/${this._id}`;
 });

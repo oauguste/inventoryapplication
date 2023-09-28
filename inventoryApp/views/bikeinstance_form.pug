@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    .container
+        h1= title
+        if errors && errors.length
+            .alert.alert-danger
+                for error in errors
+                    p= error.msg
+        form(method="post" action="")
+            div.form-group
+                label(for="bike") Bike:
+                select#bike.form-control(name="bike")
+                    each bike in bike_list
+                        option(value=bike._id selected=(bikeinstance && bikeinstance.bike == bike._id))= bike.name
+
+            div.form-group
+                label(for="status") Status:
+                select#status.form-control(name="status")
+                    option(value="In Stock" selected=(bikeinstance && bikeinstance.status == 'In Stock')) In Stock
+                    option(value="Maintenance" selected=(bikeinstance && bikeinstance.status == 'Maintenance')) Maintenance
+                    option(value="Loaned" selected=(bikeinstance && bikeinstance.status == 'Loaned')) Loaned
+                    option(value="Reserved" selected=(bikeinstance && bikeinstance.status == 'Reserved')) Reserved
+
+            input.btn.btn-primary(type="submit" value="Create Bike Instance")

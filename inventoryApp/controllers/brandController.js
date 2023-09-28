@@ -39,6 +39,7 @@ exports.brand_detail = asyncHandler(
     res.render("brand_detail.pug", {
       title: brand,
       bikes: brandBikes,
+      brand: brand,
     });
   }
 );
@@ -48,23 +49,16 @@ exports.brand_detail = asyncHandler(
 // @access Private
 exports.brand_create_get = asyncHandler(
   async (req, res, next) => {
-    res.render("brand_form", { title: "Create Brand" });
+    res.render("brand_form", {
+      title: "Create brand",
+    });
   }
 );
 
 // @desc Create new brand on Post
 // @route /brand/create
 // @access Private
-exports.brand_create_post = asyncHandler(
-  async (req, res, next) => {
-    res.send("Not Implemented: Brand get create");
-  }
-);
-
-// @desc Update brand on post
-// @route /brand/itemId/update
-// @access Private
-exports.brand_update_post = asyncHandler(
+exports.brand_create_post = [
   body("name").trim().isLength({ min: 3 }).escape(),
 
   asyncHandler(async (req, res, next) => {
@@ -73,36 +67,87 @@ exports.brand_update_post = asyncHandler(
     const brand = new Brand({
       name: req.body.name,
     });
+
     if (!errors.isEmpty()) {
       res.render("brand_form", {
         title: "Create brand",
         brand: brand,
         errors: errors.array(),
       });
-      return;
     } else {
       await brand.save();
-
       res.redirect(brand.url);
     }
-  })
-);
+  }),
+];
+
+// @desc Update brand on post
+// @route /brand/itemId/update
+// @access Private
+exports.brand_update_post = asyncHandler();
+//   body("name").trim().isLength({ min: 3 }).escape(),
+
+//   asyncHandler(async (req, res, next) => {
+//     const errors = validationResult(req);
+
+//     const brand = new Brand({
+//       name: req.body.name,
+//     });
+//     if (!errors.isEmpty()) {
+//       res.render("brand_form", {
+//         title: "Create brand",
+//         brand: brand,
+//         errors: errors.array(),
+//       });
+//       return;
+//     } else {
+//       await brand.save();
+
+//       res.redirect(brand.url);
+//     }
+//   })
 
 // @desc Update brand on get
 // @route /brand/itemId/update
 // @access Private
-exports.brand_update_get = asyncHandler(
-  async (req, res, next) => {
-    res.send("Not Implemented: Brand get Update");
-  }
-);
+exports.brand_update_get = asyncHandler();
+//   async (req, res, next) => {
+//     const [brand, allBikesInBrand] = await Promise.all([
+//       Brand.findById(req.params.id).exec(),
+//       Bike.find({ brand: req.params.id }, "title").exec(),
+//     ]);
+
+//     if (brand === null) {
+//       redirect("/catalog/brands");
+//     }
+//     res.render({
+//       title: "Delete Brand",
+//       brand: brand,
+//       brand_bikes: allBikesInBrand,
+//     });
+//   }
 
 // @desc delete brand on post
 // @route /brand/itemId/delete
 // @access Private
 exports.brand_delete_post = asyncHandler(
   async (req, res, next) => {
-    res.send("Not Implemented: Brand post delete");
+    const [brand, allBikesInBrand] = await Promise.all([
+      Brand.findById(req.params.id).exec(),
+      Bike.find({ brand: req.params.id }, "title").exec(),
+    ]);
+
+    if (allBikesInBrand.length > 0) {
+      res.render("brand_delete", {
+        title: "Delete Brand",
+        brand: brand,
+        brand_bikes: allBikesInBrand,
+      });
+      return;
+    } else {
+      await Brand.findByIdAndRemove(req.body.brandid);
+      res.redirect("/catalog/brands");
+    }
   }
 );
 
@@ -111,6 +156,18 @@ exports.brand_delete_post = asyncHandler(
 // @access Private
 exports.brand_delete_get = asyncHandler(
   async (req, res, next) => {
-    res.send("Not Implemented: Brand get delete");
+    console.log("ID from params:", req.params.id);
+    const [brand, allBikesByBrand] = await Promise.all([
+      Brand.findById(req.params.id).exec(),
+      Bike.find({ brand: req.params.id }).exec(),
+    ]);
+    if (brand === null) {
+      res.redirect("/catalog/brands");
+    }
+    res.render("brand_delete", {
+      title: "Delete Brand",
+      brand: brand,
+      brand_bikes: allBikesByBrand,
+    });
   }
 );
